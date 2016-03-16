@@ -5,14 +5,23 @@
 
 import path from 'path';
 import ProjectCore from 'project-core';
+import createDebug from 'debug';
 
 const $ = global.$ =  new ProjectCore();
+
+//创建debug函数
+$.createDebug = function (name) {
+  return createDebug('my:' + name);
+};
+const debug = $.createDebug('server');
+
 
 //加载配置文件
 $.init.add((done) => {
   $.config.load(path.resolve(__dirname,'config.js'));
   const env = process.env.NODE_ENV || null;
   if (env){
+    debug('load env: %s',env);
     $.config.load(path.resolve(__dirname,'../config',env+'.js'));
   }
   $.env = env;
@@ -22,7 +31,7 @@ $.init.add((done) => {
 
 //初始化mongodb
 $.init.load(path.resolve(__dirname,'init','mongodb.js'));
-//
+//初始化model
 $.init.load(path.resolve(__dirname,'models'));
 
 //初始化express
