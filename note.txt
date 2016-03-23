@@ -1,0 +1,13 @@
+node target/server.js
+
+git add *.js
+git commit -m "初始化express by gf on 316pm"
+git push
+
+export NODE_ENV=dev && node target/server.js
+
+export NODE_ENV=dev && export DEBUG='my:*' && node target/server.js
+
+npm run compile
+
+npm i express serve-static body-parser multiparty --save
