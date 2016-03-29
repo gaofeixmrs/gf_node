@@ -25,6 +25,7 @@ $.init.add((done) => {
     $.config.load(path.resolve(__dirname,'../config',env+'.js'));
   }
   $.env = env;
+
   done();
 });
 
