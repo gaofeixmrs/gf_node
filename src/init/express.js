@@ -31,7 +31,7 @@ module.exports = function (done) {
       fnList = fnList.map(fn => {
         return function (req, res, next) {
           const ret = fn(req, res, next);
-          if (ret.catch) ret.catch(next);
+          if (ret && ret.catch) ret.catch(next);
         };
       });
       router[method](path,...fnList);
@@ -39,6 +39,13 @@ module.exports = function (done) {
   });
   $.router = routerWrap;
 
+  app.use(function (req, res, next) {
+    res.apiSuccess = function (data) {
+      res.json({success: true, result: data});
+    };
+    next();
+  });
+  
   app.use(router);
   app.use('/static',serveStatic(path.resolve(__dirname,'../../static')));
 

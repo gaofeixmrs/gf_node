@@ -14,5 +14,8 @@ module.exports = function(done){
   $.mongodb = conn;
   $.model = {};
 
+  const ObjectId = mongoose.Types.ObjectId;
+  $.utils.ObjectId = ObjectId;
+
   done();
 }
