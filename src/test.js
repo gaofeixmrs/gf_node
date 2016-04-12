@@ -16,9 +16,12 @@ $.method('user.add').call({
 $.method('user.get').call({
   name: 'hel',
 },console.log);
-*/
+
 
 $.method('user.update').call({
   name: 'hello',
   nickname: 'gf',
 },console.log);
+
+*/
+console.log('nodemon');
