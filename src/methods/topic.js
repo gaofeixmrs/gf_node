@@ -30,7 +30,16 @@ module.exports = function (done) {
   });
   $.method('topic.get').register(async function (params) {
 
-    return $.model.Topic.findOne({_id: params._id});
+    return $.model.Topic.findOne({_id: params._id})
+    .populate({
+      path: 'authorId',
+      model: 'User',
+      select: 'nickname about',
+  }).populate({
+      path: 'comments.authorId',
+      model: 'User',
+      select: 'nickname about',
+    });
 
   });
 
@@ -54,6 +63,10 @@ module.exports = function (done) {
       createdAt: 1,
       updatedAt: 1,
       lastCommentedAt: 1,
+    }).populate({
+      path: 'authorId',
+      model: 'User',
+      select: 'nickname about',
     });
     if (params.skip) ret.skip(Number(params.skip));
     if (params.limit) ret.limit(Number(params.limit));
@@ -137,6 +150,10 @@ module.exports = function (done) {
       'comments._id': params.cid
     }, {
       'comments.$': 1,
+    }).populate({
+      path: 'authorId',
+      model: 'User',
+      select: 'nickname about',
     });
 
   });
