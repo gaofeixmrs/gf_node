@@ -10,6 +10,7 @@ import Login from './component/Login';
 import NewTopic from './component/NewTopic';
 import EditTopic from './component/EditTopic';
 import Signup from './component/Signup';
+import Profile from './component/Profile';
 
 const e = document.createElement('div');
 e.id = 'app';
@@ -23,6 +24,7 @@ ReactDOM.render((
       <Route path="new" component={NewTopic}/>
       <Route path="login" component={Login}/>
       <Route path="signup" component={Signup}/>
+      <Route path="profile" component={Profile}/>
     </Route>
   </Router>
 ), e);
