@@ -15,6 +15,14 @@ module.exports = function (done) {
 
     if (!req.body.password) return next(new Error('missing password'));
 
+
+    const key = `login:${req.body.name}:${$.utils.date('Ymd')}`;
+    {
+      const limit = 5;
+      const ok = await $.limiter.incr(key,limit);
+      if (!ok) throw new Error('out of limit');
+    }
+
     const user = await $.method('user.get').call(req.body);
     if (!user) return next(new Error('user does not exists'));
 
@@ -25,7 +33,11 @@ module.exports = function (done) {
     req.session.user = user;
     req.session.logout_token = $.utils.randomString(20);
 
+    await $.limiter.reset(key);
+
     res.apiSuccess({token: req.session.logout_token});
+
+
 
   });
 
@@ -54,6 +66,14 @@ module.exports = function (done) {
   });
 
   $.router.post('/api/signup', async function (req, res, next) {
+
+    {
+      const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      const key = `signup:${ip}:${$.utils.date('Ymd')}`;
+      const limit = 2;
+      const ok = await $.limiter.incr(key,limit);
+      if (!ok) throw new Error('out of limit');
+    }
 
     const user = await $.method('user.add').call(req.body);
 

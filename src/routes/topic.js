@@ -11,6 +11,14 @@ var tools = require('../common/tools');
 
     req.body.authorId = req.session.user._id;
 
+    // 发布频率限制
+    {
+      const key = `addtopic:${req.body.authorId}:${$.utils.date('YmdH')}`;
+      const limit = 2;
+      const ok = await $.limiter.incr(key,limit);
+      if (!ok) throw new Error('out of limit');
+    }
+
     if ('tags' in req.body) {
       req.body.tags = req.body.tags.split(',').map(v => v.trim()).filter(v => v);
     }
@@ -113,6 +121,14 @@ var tools = require('../common/tools');
 
     req.body._id = req.params.topic_id;
     req.body.authorId = req.session.user._id;
+
+    {
+      const key = `addcomment:${req.body.authorId}:${$.utils.date('YmdH')}`;
+      const limit = 20;
+      const ok = await $.limiter.incr(key,limit);
+      if (!ok) throw new Error('out of limit');
+    }
+
     const comment = await $.method('topic.comment.add').call(req.body);
 
     res.apiSuccess({comment});
