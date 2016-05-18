@@ -25,6 +25,8 @@ var tools = require('../common/tools');
 
     const topic = await $.method('topic.add').call(req.body);
 
+    await $.method('user.incrScore').call({_id: req.body.authorId, score: 5});
+
     res.apiSuccess({topic});
 
   });
@@ -69,24 +71,25 @@ var tools = require('../common/tools');
     if (!topic) return next(new Error(`topic ${req.params.topic_id} does not exists`));
 
     const userId = req.session.user && req.session.user._id && req.session.user._id.toString();
-        const isAdmin = req.session.user && req.session.user.isAdmin;
+    const isAdmin = req.session.user && req.session.user.isAdmin;
 
-        const result = {};
-        result.topic = $.utils.cloneObject(topic);
+    const result = {};
+    result.topic = $.utils.cloneObject(topic);
 
-        result.topic.createdAt_ago=tools.formatDate(topic.createdAt, true);
-        result.topic.permission = {
-          edit: isAdmin || userId === result.topic.authorId._id,
-          delete: isAdmin || userId === result.topic.authorId._id,
-        };
-        result.topic.comments.forEach(item => {
-          item.permission = {
-            delete: isAdmin || userId === item.authorId._id,
-          };
-          item.createdAt_ago= tools.formatDate(item.createdAt, true);
-        });
+    result.topic.createdAt_ago=tools.formatDate(topic.createdAt, true);
+    result.topic.permission = {
+      edit: isAdmin || userId === result.topic.authorId._id,
+      delete: isAdmin || userId === result.topic.authorId._id,
+    };
+    result.topic.comments.forEach(item => {
+      item.permission = {
+        delete: isAdmin || userId === item.authorId._id,
+      };
+      item.createdAt_ago= tools.formatDate(item.createdAt, true);
+    });
 
-        res.apiSuccess(result);
+    await $.method('topic.incrPageView').call({_id: req.params.topic_id});
+    res.apiSuccess(result);
 
 
   });
@@ -131,6 +134,8 @@ var tools = require('../common/tools');
 
     const comment = await $.method('topic.comment.add').call(req.body);
 
+    await $.method('user.incrScore').call({_id: req.body.authorId, score: 1});
+    
     res.apiSuccess({comment});
 
   });

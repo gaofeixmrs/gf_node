@@ -53,11 +53,11 @@ export default class TopicList extends React.Component {
               <span className="reply_count pull-left">
                 <span className="count_of_replies" title="回复数">
                 &nbsp;&nbsp;
-                  {item.reply_count}
+                  {item.reply_count || 0}
                 </span>
                 <span className="count_seperator">/</span>
                 <span className="count_of_visits" title='点击数'>
-                  {item.visit_count}
+                  {item.pageView || 0}
                 </span>
               </span>
               &nbsp;

@@ -86,6 +86,16 @@ module.exports = function (done) {
   });
 
 
+  $.method('user.incrScore').check({
+    _id: {validate: (v) => validator.isMongoId(v), require: true},
+    score: {validate: (v) => !isNaN(v), require: true},
+  });
+  $.method('user.incrScore').register(async function (params) {
+
+    return $.model.User.update({_id: params._id}, {$inc: {score: params.score}});
+
+  });
+
   done();
 
 };
