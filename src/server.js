@@ -15,8 +15,6 @@ $.createDebug = function (name) {
 };
 const debug = $.createDebug('server');
 
-
-
 //加载配置文件
 $.init.add((done) => {
   $.config.load(path.resolve(__dirname,'config.js'));
@@ -29,7 +27,6 @@ $.init.add((done) => {
 
   done();
 });
-
 
 //初始化mongodb
 $.init.load(path.resolve(__dirname,'init','mongodb.js'));

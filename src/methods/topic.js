@@ -6,6 +6,7 @@
 
 import validator from 'validator';
 
+
 module.exports = function (done) {
 
 
@@ -40,7 +41,6 @@ module.exports = function (done) {
       model: 'User',
       select: 'nickname about',
     });
-
   });
 
 
@@ -63,10 +63,12 @@ module.exports = function (done) {
       createdAt: 1,
       updatedAt: 1,
       lastCommentedAt: 1,
+      reply_count: 1,
+      visit_count: 1,
     }).populate({
       path: 'authorId',
       model: 'User',
-      select: 'nickname about',
+      select: 'nickname about avatar',
     });
     if (params.skip) ret.skip(Number(params.skip));
     if (params.limit) ret.limit(Number(params.limit));
@@ -129,6 +131,26 @@ module.exports = function (done) {
       content: params.content,
       createdAt: new Date(),
     };
+
+    const topic = await $.method('topic.get').call({_id: params._id});
+    if (!topic) throw new Error('topic does not exists');
+// console.log({
+//   from: params.authorId,
+//   to: topic.authorId._id,
+//   type:'topic_commit',
+//   date:{
+//     _id: params._id,
+//   },
+// });
+    await $.method('notification.add').call({
+      from: params.authorId,
+      to: topic.authorId._id,
+      type:'topic_commit',
+      data:{
+        _id: params._id,
+        title: topic.title,
+      }
+    });
 
     return $.model.Topic.update({_id: params._id}, {
       $push: {

@@ -17,6 +17,7 @@ module.exports = function (done) {
     nickname: {type: String},
     about: {type: String},
     isAdmin: {type: Boolean},
+    avatar:{type: String},
   });
 
   $.mongodb.model('User',User);

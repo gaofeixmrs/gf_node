@@ -45,8 +45,24 @@ export default class TopicList extends React.Component {
           {list.map((item, i) => {
             return (
               <Link to={`/topic/${item._id}`} className="list-group-item" key={i}>
-                {item.title}
-                <span className="pull-right">{item.authorId.nickname} 发表于 {item.createdAt}</span>
+
+              <span className="user_avatar pull-left">
+              <img src={item.authorId.avatar} />
+              </span>
+
+              <span className="reply_count pull-left">
+                <span className="count_of_replies" title="回复数">
+                &nbsp;&nbsp;
+                  {item.reply_count}
+                </span>
+                <span className="count_seperator">/</span>
+                <span className="count_of_visits" title='点击数'>
+                  {item.visit_count}
+                </span>
+              </span>
+              &nbsp;
+              {item.title}
+                <span className="pull-right">{item.authorId.nickname} 发表于 {item.createdAt_ago}</span>
               </Link>
             )
           })}

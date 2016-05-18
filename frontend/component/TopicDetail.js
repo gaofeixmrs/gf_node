@@ -42,16 +42,16 @@ export default class TopicDetail extends React.Component {
         });
     }
 
-  handleDeleteComment(cid) {
-    if (!confirm('是否删除评论？')) return;
-    deleteComment(this.state.topic._id, cid)
-      .then(comment => {
-        this.refresh();
-      })
-      .catch(err => {
-        alert(err);
-      });
-  }
+    handleDeleteTopic() {
+      if (!confirm('是否删除主题？')) return;
+      deleteTopic(this.state.topic._id)
+        .then(() => {
+          redirectURL('/');
+        })
+        .catch(err => {
+          alert(err);
+        });
+    }
 
   render() {
     const topic = this.state.topic;
@@ -63,7 +63,7 @@ export default class TopicDetail extends React.Component {
     return (
       <div>
         <h2>{topic.title}</h2>
-        <p>{topic.authorId.nickname} 发表于 {topic.createdAt}</p>
+        <p>{topic.authorId.nickname} 发表于 {topic.createdAt_ago}</p>
         <p>标签：{topic.tags.join(', ')}</p>
         <p>
             {!topic.permission.edit ? null :
@@ -105,7 +105,7 @@ export default class TopicDetail extends React.Component {
                   </button>
                 }
                 </span>
-                {item.authorId.nickname}于{item.createdAt}说：
+                {item.authorId.nickname}于{item.createdAt_ago}说：
                 <p dangerouslySetInnerHTML={{__html: item.html}}></p>
               </li>
             )

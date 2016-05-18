@@ -5,7 +5,7 @@
  */
 
 module.exports = function (done) {
-
+var tools = require('../common/tools');
 
   $.router.post('/api/topic/add', $.checkLogin,  async function (req, res, next) {
 
@@ -36,10 +36,21 @@ module.exports = function (done) {
 
     const list = await $.method('topic.list').call(req.query);
 
+    const result = {};
+
+    result.list = $.utils.cloneObject(list);
+
+    result.list.forEach(item => {
+      item.createdAt_ago = tools.formatDate(item.createdAt, true);
+    });
+
     const count = await $.method('topic.count').call(req.query);
     const pageSize = Math.ceil(count / req.query.limit);
+    result.count = count;
+    result.page = page;
+    result.pageSize = pageSize;
 
-    res.apiSuccess({count,page,pageSize,list});
+    res.apiSuccess(result);
 
   });
 
@@ -54,14 +65,17 @@ module.exports = function (done) {
 
         const result = {};
         result.topic = $.utils.cloneObject(topic);
+
+        result.topic.createdAt_ago=tools.formatDate(topic.createdAt, true);
         result.topic.permission = {
-          edit: isAdmin || userId === result.topic.author._id,
-          delete: isAdmin || userId === result.topic.author._id,
+          edit: isAdmin || userId === result.topic.authorId._id,
+          delete: isAdmin || userId === result.topic.authorId._id,
         };
         result.topic.comments.forEach(item => {
           item.permission = {
-            delete: isAdmin || userId === item.author._id,
+            delete: isAdmin || userId === item.authorId._id,
           };
+          item.createdAt_ago= tools.formatDate(item.createdAt, true);
         });
 
         res.apiSuccess(result);
