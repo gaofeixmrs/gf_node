@@ -3,7 +3,7 @@ import jQuery from 'jquery';
 import {Link} from 'react-router';
 import 'highlight.js/styles/github-gist.css';
 import {notificationList,notificationSetRead} from '../lib/client';
-import {redirectURL} from '../lib/utils';
+import {redirectURL,formatDate} from '../lib/utils';
 
 export default class Notification extends React.Component {
 
@@ -46,7 +46,7 @@ export default class Notification extends React.Component {
       const ret = {};
       if (item.type === 'topic_commit') {
         ret.link = `/topic/${item.data._id}`;
-        ret.title = `${item.from.nickname}于${item.createAt}评论了你发布的主题《${item.data.title}》`;
+        ret.title = `${item.from.nickname}于${formatDate(item.createAt, true)}评论了你发布的主题《${item.data.title}》`;
       } else {
         ret.Link = null;
         ret.title = `系统消息`;

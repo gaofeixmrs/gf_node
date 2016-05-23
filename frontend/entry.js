@@ -12,6 +12,7 @@ import EditTopic from './component/EditTopic';
 import Signup from './component/Signup';
 import Profile from './component/Profile';
 import Notification from './component/Notification';
+import EmotionTag from './component/EmotionTag';
 
 const e = document.createElement('div');
 e.id = 'app';
@@ -27,6 +28,7 @@ ReactDOM.render((
       <Route path="signup" component={Signup}/>
       <Route path="profile" component={Profile}/>
       <Route path="notification" component={Notification}/>
+      <Route path="emotiontag" component={EmotionTag}/>
     </Route>
   </Router>
 ), e);

@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import 'highlight.js/styles/github-gist.css';
 import {getTopicDetail, addComment, deleteComment,deleteTopic} from '../lib/client';
-import {renderMarkdown,redirectURL} from '../lib/utils';
+import {renderMarkdown,redirectURL,formatDate} from '../lib/utils';
 import CommentEditor from './CommentEditor';
 
 export default class TopicDetail extends React.Component {
@@ -63,7 +63,7 @@ export default class TopicDetail extends React.Component {
     return (
       <div>
         <h2>{topic.title}</h2>
-        <p>{topic.authorId.nickname} 发表于 {topic.createdAt_ago}</p>
+        <p>{topic.authorId.nickname} 发表于 {formatDate(topic.createdAt, true)}</p>
         <p>标签：{topic.tags.join(', ')}</p>
         <p>
             {!topic.permission.edit ? null :
@@ -105,7 +105,7 @@ export default class TopicDetail extends React.Component {
                   </button>
                 }
                 </span>
-                {item.authorId.nickname}于{item.createdAt_ago}说：
+                {item.authorId.nickname}于{formatDate(item.createdAt, true)}说：
                 <p dangerouslySetInnerHTML={{__html: item.html}}></p>
               </li>
             )

@@ -5,7 +5,6 @@
  */
 
 module.exports = function (done) {
-var tools = require('../common/tools');
 
   $.router.post('/api/topic/add', $.checkLogin,  async function (req, res, next) {
 
@@ -38,29 +37,16 @@ var tools = require('../common/tools');
       req.query.tags = req.query.tags.split(',').map(v => v.trim()).filter(v => v);
     }
 
-    let page = parseInt(req.query.page,10);
+    let page = parseInt(req.query.page,20);
     if (!(page > 1)) page = 1;
-    req.query.limit = 10;
+    req.query.limit = 20;
     req.query.skip = (page - 1) * req.query.limit;
 
-
     const list = await $.method('topic.list').call(req.query);
-
-    const result = {};
-
-    result.list = $.utils.cloneObject(list);
-
-    result.list.forEach(item => {
-      item.createdAt_ago = tools.formatDate(item.createdAt, true);
-    });
-
     const count = await $.method('topic.count').call(req.query);
     const pageSize = Math.ceil(count / req.query.limit);
-    result.count = count;
-    result.page = page;
-    result.pageSize = pageSize;
 
-    res.apiSuccess(result);
+    res.apiSuccess({count, page, pageSize, list});
 
   });
 
@@ -75,8 +61,6 @@ var tools = require('../common/tools');
 
     const result = {};
     result.topic = $.utils.cloneObject(topic);
-
-    result.topic.createdAt_ago=tools.formatDate(topic.createdAt, true);
     result.topic.permission = {
       edit: isAdmin || userId === result.topic.authorId._id,
       delete: isAdmin || userId === result.topic.authorId._id,
@@ -85,10 +69,10 @@ var tools = require('../common/tools');
       item.permission = {
         delete: isAdmin || userId === item.authorId._id,
       };
-      item.createdAt_ago= tools.formatDate(item.createdAt, true);
     });
 
     await $.method('topic.incrPageView').call({_id: req.params.topic_id});
+
     res.apiSuccess(result);
 
 
@@ -135,7 +119,7 @@ var tools = require('../common/tools');
     const comment = await $.method('topic.comment.add').call(req.body);
 
     await $.method('user.incrScore').call({_id: req.body.authorId, score: 1});
-    
+
     res.apiSuccess({comment});
 
   });

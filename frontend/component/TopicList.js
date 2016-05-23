@@ -1,6 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router';
 import {getTopicList} from '../lib/client';
+import '../lib/style.css';
+import {formatDate} from '../lib/utils';
 
 export default class TopicList extends React.Component {
 
@@ -31,7 +33,7 @@ export default class TopicList extends React.Component {
 
   render() {
     const list = Array.isArray(this.state.list) ? this.state.list : [];
-    let  page = parseInt(this.state.page, 10);
+    let  page = parseInt(this.state.page, 20);
     if (!(page > 1)) page = 1;
 
     let prevPage = page - 1;
@@ -47,7 +49,7 @@ export default class TopicList extends React.Component {
               <Link to={`/topic/${item._id}`} className="list-group-item" key={i}>
 
               <span className="user_avatar pull-left">
-              <img src={item.authorId.avatar} />
+                <img src={item.authorId.avatar || require('url!./../lib/image/avatar.jpg') }/>
               </span>
 
               <span className="reply_count pull-left">
@@ -62,7 +64,7 @@ export default class TopicList extends React.Component {
               </span>
               &nbsp;
               {item.title}
-                <span className="pull-right">{item.authorId.nickname} 发表于 {item.createdAt_ago}</span>
+                <span className="pull-right">{item.authorId.nickname} 发表于 {formatDate(item.createdAt, true)}</span>
               </Link>
             )
           })}

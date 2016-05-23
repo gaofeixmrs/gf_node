@@ -3,3 +3,16 @@
   height: auto;
   min-height: 100px;
 }
+
+
+.user_avatar img, .user_big_avatar img {
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+}
+
+.emotiontag img {
+  width: 56px;
+  height: 56px;
+  border-radius: 3px;
+}
