@@ -4,7 +4,10 @@
 *@author gaofei <724291658@qq.com>
  */
 
-
+import fs from 'fs';
+import path from 'path';
+import rd from 'rd';
+import ejs from 'ejs';
 import nodemailer from 'nodemailer';
 
 module.exports = function (done) {
@@ -14,6 +17,13 @@ module.exports = function (done) {
     from: $.config.get('smtp.auth.user'),
   });
 
+
+  const templates = {};
+  rd.eachFileFilterSync(path.resolve(__dirname, '../../email_templates'), /\.html$/, (f, s) => {
+    const name = path.basename(f, '.html');
+    const html = fs.readFileSync(f).toString();
+    templates[name] = ejs.compile(html);
+  });
 
   $.method('mail.send').check({
     to: {required: true},
@@ -26,12 +36,31 @@ module.exports = function (done) {
 
   });
 
-$.method('mail.send').call({
-  to: 'gao_fei@cepiec.com.cn',
-  subject: 'gf_node测试邮件',
-  html:'test',
-},console.log);
+// $.method('mail.send').call({
+//   to: 'gao_fei@cepiec.com.cn',
+//   subject: 'gf_node测试邮件',
+//   html:'test',
+// },console.log);
 
+  $.method('mail.sendTemplate').check({
+    to: {required: true},
+    subject: {required: true},
+    template: {required: true},
+  });
+  $.method('mail.sendTemplate').register(async function (params) {
+
+    const fn = templates[params.template];
+    if (!fn) throw new Error(`invalid email template "${params.template}"`);
+
+    const html = fn(params.data || {});
+
+    return $.method('mail.send').call({
+      to: params.to,
+      subject: params.subject,
+      html: html,
+    });
+
+  });
 
   done();
 
