@@ -33,6 +33,14 @@ module.exports = function (done) {
     req.session.user = user;
     req.session.logout_token = $.utils.randomString(20);
 
+    if (req.session.github_user) {
+      await $.method('user.update').call({
+        _id: user._id,
+        githubUsername: req.session.github_user.username,
+      });
+      delete req.session.github_user;
+    }
+    
     await $.limiter.reset(key);
 
     res.apiSuccess({token: req.session.logout_token});
@@ -85,7 +93,7 @@ module.exports = function (done) {
     }, err => {
       if (err) console.error(err);
     });
-    
+
     res.apiSuccess({user: user});
 
   });

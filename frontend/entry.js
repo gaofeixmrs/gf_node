@@ -10,6 +10,7 @@ import Login from './component/Login';
 import NewTopic from './component/NewTopic';
 import EditTopic from './component/EditTopic';
 import Signup from './component/Signup';
+import ResetPassword from './component/ResetPassword';
 import Profile from './component/Profile';
 import Notification from './component/Notification';
 import EmotionTag from './component/EmotionTag';
@@ -26,6 +27,7 @@ ReactDOM.render((
       <Route path="new" component={NewTopic}/>
       <Route path="login" component={Login}/>
       <Route path="signup" component={Signup}/>
+      <Route path="reset_password" component={ResetPassword}/>
       <Route path="profile" component={Profile}/>
       <Route path="notification" component={Notification}/>
       <Route path="emotiontag" component={EmotionTag}/>
