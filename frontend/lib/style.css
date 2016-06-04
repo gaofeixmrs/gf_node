@@ -16,3 +16,37 @@
   height: 56px;
   border-radius: 3px;
 }
+
+
+.count_of_replies {
+  color: rgb(158, 120, 192);
+}
+
+
+.count_of_visits {
+  font-size: 10px;
+  color: rgb(180, 180, 180);
+}
+
+
+.topic_title_wrapper {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.reply_count {
+  width: 70px;
+  display: inline-block;
+  text-align: center;
+}
+
+
+.count_seperator {
+  margin: 0 -3px;
+  font-size: 10px;
+}
+
+.text-center {
+    text-align: center;
+}

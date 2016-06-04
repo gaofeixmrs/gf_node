@@ -63,8 +63,9 @@ module.exports = function (done) {
       createdAt: 1,
       updatedAt: 1,
       lastCommentedAt: 1,
-      reply_count: 1,
-      visit_count: 1,
+      replyCount: 1,
+      top:1,
+      good:1,
       pageView: 1,
     }).populate({
       path: 'authorId',
@@ -73,7 +74,7 @@ module.exports = function (done) {
     });
     if (params.skip) ret.skip(Number(params.skip));
     if (params.limit) ret.limit(Number(params.limit));
-
+    ret.sort({top: -1,good: -1, _id: -1});
     return ret;
 
   });
@@ -122,11 +123,58 @@ module.exports = function (done) {
   $.method('topic.incrPageView').check({
     _id: {required: true, validate: (v) => validator.isMongoId(v)},
   });
+
   $.method('topic.incrPageView').register(async function (params) {
 
     return $.model.Topic.update({_id: params._id}, {$inc: {pageView: 1}});
 
   });
+
+
+  $.method('topic.incrreplay').check({
+    _id: {required: true, validate: (v) => validator.isMongoId(v)},
+  });
+
+  $.method('topic.incrreplay').register(async function (params) {
+
+    return $.model.Topic.update({_id: params._id}, {$inc: {replyCount: 1}});
+
+  });
+
+
+
+  $.method('topic.dincrreplay').check({
+    _id: {required: true, validate: (v) => validator.isMongoId(v)},
+  });
+
+  $.method('topic.dincrreplay').register(async function (params) {
+
+    return $.model.Topic.update({_id: params._id}, {$inc: {replyCount: -1}});
+
+  });
+
+
+  $.method('topic.top').check({
+    _id: {required: true, validate: (v) => validator.isMongoId(v)},
+  });
+
+  $.method('topic.top').register(async function (params) {
+
+    return $.model.Topic.update({_id: params._id}, {top: 1});
+
+  });
+
+
+  $.method('topic.good').check({
+    _id: {required: true, validate: (v) => validator.isMongoId(v)},
+  });
+
+  $.method('topic.good').register(async function (params) {
+
+    return $.model.Topic.update({_id: params._id}, {good: 1});
+
+  });
+
 
 
   $.method('topic.comment.add').check({
@@ -164,25 +212,24 @@ module.exports = function (done) {
 
     const fromUser = await $.method('user.get').call({_id: params.authorId});
     const toUser = await $.method('user.get').call({_id: topic.authorId._id});
-    $.method('mail.sendTemplate').call({
-      to: toUser.email,
-      subject: `有人回复了你发表的主题《${topic.title}》`,
-      template: 'reply',
-      data: {
-        topic: topic,
-        content: params.content,
-        user: fromUser,
-      },
-    }, err => {
-      if (err) console.error(err);
-    });
-
+    // $.method('mail.sendTemplate').call({
+    //   to: toUser.email,
+    //   subject: `有人回复了你发表的主题《${topic.title}》`,
+    //   template: 'reply',
+    //   data: {
+    //     topic: topic,
+    //     content: params.content,
+    //     user: fromUser,
+    //   },
+    // }, err => {
+    //   if (err) console.error(err);
+    // });
+   //db.getCollection('topics').update({_id:ObjectId("5750fb70d3c47be304fc04ec")},{ $inc: { reply_count: 1}})
     return $.model.Topic.update({_id: params._id}, {
       $push: {
         comments: comment
       },
     });
-
   });
 
 

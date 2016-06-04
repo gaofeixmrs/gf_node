@@ -16,6 +16,8 @@ module.exports = function (done) {
     title: {type: String, trim: true},
     content: {type: String},
     tags: [{type: String, index: true}],
+    top: { type: Boolean, default: false }, // 置顶帖
+    good: {type: Boolean, default: false}, // 精华帖
     createdAt: {type: Date, index: true},
     updatedAt: {type: Date, index: true},
     lastCommentedAt: {type: Date, index: true},
@@ -25,6 +27,7 @@ module.exports = function (done) {
       createdAt: Date,
     }],
     pageView: {type: Number},
+    replyCount: {type: Number, default: 0},
   });
 
   $.mongodb.model('Topic', Topic);

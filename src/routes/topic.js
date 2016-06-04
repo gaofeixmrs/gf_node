@@ -64,6 +64,8 @@ module.exports = function (done) {
     result.topic.permission = {
       edit: isAdmin || userId === result.topic.authorId._id,
       delete: isAdmin || userId === result.topic.authorId._id,
+      top: isAdmin,
+      good: isAdmin,
     };
     result.topic.comments.forEach(item => {
       item.permission = {
@@ -118,6 +120,8 @@ module.exports = function (done) {
 
     const comment = await $.method('topic.comment.add').call(req.body);
 
+    await $.method('topic.incrreplay').call({_id: req.params.topic_id});
+
     await $.method('user.incrScore').call({_id: req.body.authorId, score: 1});
 
     res.apiSuccess({comment});
@@ -146,7 +150,30 @@ module.exports = function (done) {
       return next(new Error('comment does not exists'));
     }
 
+    await $.method('topic.dincrreplay').call({_id: req.params.topic_id});
+
     res.apiSuccess({comment: comment.comments[0]});
+
+  });
+
+
+  $.router.post('/api/topic/item/:topic_id/top', $.checkLogin, async function (req, res, next) {
+
+    const ret = await $.method('topic.top').call({
+      _id: req.params.topic_id,
+    });
+
+    res.apiSuccess(ret);
+
+  });
+
+  $.router.post('/api/topic/item/:topic_id/good', $.checkLogin, async function (req, res, next) {
+
+    const ret = await $.method('topic.good').call({
+      _id: req.params.topic_id,
+    });
+
+    res.apiSuccess(ret);
 
   });
 

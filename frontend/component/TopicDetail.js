@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
 import 'highlight.js/styles/github-gist.css';
-import {getTopicDetail, addComment, deleteComment,deleteTopic} from '../lib/client';
+import {getTopicDetail, addComment, deleteComment,deleteTopic,topictop,topicgood} from '../lib/client';
 import {renderMarkdown,redirectURL,formatDate} from '../lib/utils';
 import CommentEditor from './CommentEditor';
 
@@ -20,9 +20,10 @@ export default class TopicDetail extends React.Component {
     getTopicDetail(this.props.params.id)
       .then(topic => {
         topic.html = renderMarkdown(topic.content);
+        //console.log('log11:'+topic.html)
         if (topic.comments) {
           for (const item of topic.comments) {
-            console.log(item)
+            //console.log(item)
             item.html = renderMarkdown(item.content);
           }
         }
@@ -36,6 +37,26 @@ export default class TopicDetail extends React.Component {
       deleteComment(this.state.topic._id, cid)
         .then(comment => {
           this.refresh();
+        })
+        .catch(err => {
+          alert(err);
+        });
+    }
+
+    handleTopicTop() {
+      topictop(this.state.topic._id)
+        .then(() => {
+          redirectURL('/');
+        })
+        .catch(err => {
+          alert(err);
+        });
+    }
+
+    handleTopicGood() {
+      topicgood(this.state.topic._id)
+        .then(() => {
+          redirectURL('/');
         })
         .catch(err => {
           alert(err);
@@ -75,6 +96,18 @@ export default class TopicDetail extends React.Component {
             {!topic.permission.delete ? null :
             <button className="btn btn-xs btn-danger" onClick={this.handleDeleteTopic.bind(this)}>
               <i className="glyphicon glyphicon-trash"></i> 删除
+            </button>
+            }
+            &nbsp;&nbsp;
+            {!topic.permission.top ? null :
+            <button className="btn btn-xs btn-success" onClick={this.handleTopicTop.bind(this)}>
+              <i className="glyphicon glyphicon-eject"></i> 置顶
+            </button>
+            }
+            &nbsp;&nbsp;
+            {!topic.permission.good ? null :
+            <button className="btn btn-xs btn-info" onClick={this.handleTopicGood.bind(this)}>
+              <i className="glyphicon glyphicon-star"></i> 精华
             </button>
             }
         </p>

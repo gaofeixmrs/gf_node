@@ -83,6 +83,14 @@ export function deleteTopic(id) {
   return request('delete', `topic/item/${id}/`);
 }
 
+export function topictop(id) {
+  return request('post', `topic/item/${id}/top`);
+}
+
+export function topicgood(id) {
+  return request('post', `topic/item/${id}/good`);
+}
+
 export function notificationCount(isRead) {
   return request('get', 'notification/count',{isRead}).then(ret => ret.count);
 }

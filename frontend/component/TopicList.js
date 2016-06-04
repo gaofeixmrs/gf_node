@@ -48,23 +48,31 @@ export default class TopicList extends React.Component {
             return (
               <Link to={`/topic/${item._id}`} className="list-group-item" key={i}>
 
-              <span className="user_avatar pull-left">
-                <img src={item.authorId.avatar || require('url!./../lib/image/avatar.jpg') }/>
-              </span>
+                <span className="user_avatar pull-left">
+                  <img src={item.authorId.avatar || require('url!./../lib/image/avatar.jpg') }/>
+                </span>
 
-              <span className="reply_count pull-left">
-                <span className="count_of_replies" title="回复数">
-                &nbsp;&nbsp;
-                  {item.reply_count || 0}
+                <span className="reply_count">
+                  <span className="count_of_replies" title="回复数">
+                    {item.replyCount || 0}
+                    &nbsp;
+                  </span>
+                  <span className="count_seperator">/</span>
+                    &nbsp;
+                  <span className="count_of_visits" title='点击数'>
+                    {item.pageView || 0}
+                  </span>
                 </span>
-                <span className="count_seperator">/</span>
-                <span className="count_of_visits" title='点击数'>
-                  {item.pageView || 0}
+
+                <span className="topic_title_wrapper">
+                  {item.top ? <span className="label label-success" > 置顶 </span> : <span className="label label-success" > {item.tags} </span>}
+                  &nbsp;&nbsp;{item.title}
                 </span>
-              </span>
-              &nbsp;
-              {item.title}
-                <span className="pull-right">{item.authorId.nickname} 发表于 {formatDate(item.createdAt, true)}</span>
+
+                <span className="pull-right">
+                  {item.authorId.nickname} 
+                  发表于 {formatDate(item.createdAt, true)}
+                </span>
               </Link>
             )
           })}
